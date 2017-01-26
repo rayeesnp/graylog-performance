@@ -47,10 +47,11 @@ def worker(process, duration):
                 sleep(sleep_thread)
                 f.write('%s - %s - [%s] "GET %s HTTP/1.0" 200 %s "%s" "%s"\n' % (datetime.datetime.now(), thread_name, random.choice(ips),uri,random.randint(2000,5000),referer,useragent))
             unique_message_1 = thread_name+"_uni"+str(uuid.uuid4())[:6]
-            f.write('%s - %s - [%s_%d] "GET %s HTTP/1.0" 200 %s "%s" "%s"\n' % (datetime.datetime.now(), thread_name, unique_message_1,count, uri,random.randint(2000,5000),referer,useragent))
+            message_time = datetime.datetime.now()
+            f.write('%s - %s - [%s_%d] "GET %s HTTP/1.0" 200 %s "%s" "%s"\n' % (message_time, thread_name, unique_message_1,count, uri,random.randint(2000,5000),referer,useragent))
             count = count + 1
             final_time = datetime.datetime.now()
-        print ("Source %s took  %.2f seconds and generated messgage with string %s : %d times"  % (thread_name, (final_time - initial_time).total_seconds(), unique_message_1, count))
+        print ("Source %s took  %.2f seconds and generated messgage with string %s : %d times"  % (thread_name, (final_time - initial_time).total_seconds(), thread_name+"_uni", count))
 
 def execute_main():
     jobs = []
