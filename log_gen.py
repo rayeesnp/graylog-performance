@@ -1,7 +1,7 @@
 __author__ = 'namatra'
 import time
 import datetime
-import random
+import random, uuid
 from time import sleep
 import socket
 import argparse
@@ -24,33 +24,33 @@ sleep_thread = 0.0015
 def worker(process, duration):
     timestr = time.strftime("%Y%m%d-%H%M%S")
     thread_name = socket.gethostname()+"_"+str(process)
-    unique_message_1 = thread_name+"_uni"
+    #unique_message_1 = thread_name+"_uni"+str(uuid.uuid4())[:6]
     f = open('/data/logs/access_log_'+timestr+'_'+str(process)+'_'+'.log','w')
     initial_time = datetime.datetime.now()
 
-    # Execute 60 second * total time provided input
-
-    t_end = time.time() + 60 * duration
-    count = 0
-    while time.time() < t_end:
-        for i in xrange(0,number):
-            increment = datetime.timedelta(seconds=random.randint(30,300))
-            #otime += increment
-            uri = random.choice(resources)
-            if uri.find("Store")>0:
-                uri += `random.randint(1000,1500)`
-            ip = random.choice(ips)
-            useragent = random.choice(useragents)
-            referer = random.choice(referers)
-            sleep(sleep_thread)
-            f.write('%s - %s - [%s] "GET %s HTTP/1.0" 200 %s "%s" "%s"\n' % (datetime.datetime.now(), thread_name, random.choice(ips),uri,random.randint(2000,5000),referer,useragent))
-        f.write('%s - %s - [%s_%d] "GET %s HTTP/1.0" 200 %s "%s" "%s"\n' % (datetime.datetime.now(), thread_name, unique_message_1,count, uri,random.randint(2000,5000),referer,useragent))
-        count = count + 1
-        final_time = datetime.datetime.now()
-
-
-    print ("Process %s took  %.2f seconds and generated messgage with string %s : %d times"  % (process, (final_time - initial_time).total_seconds(), unique_message_1, count))
-
+    # Execute 60 second * total cycle provided in input
+    print duration
+    for cycle in range(duration):
+        t_end = time.time() + 60
+        count = 0
+        final_time = 0
+        while time.time() < t_end:
+            for i in xrange(0,number):
+                increment = datetime.timedelta(seconds=random.randint(30,300))
+                #otime += increment
+                uri = random.choice(resources)
+                if uri.find("Store")>0:
+                    uri += `random.randint(1000,1500)`
+                ip = random.choice(ips)
+                useragent = random.choice(useragents)
+                referer = random.choice(referers)
+                sleep(sleep_thread)
+                f.write('%s - %s - [%s] "GET %s HTTP/1.0" 200 %s "%s" "%s"\n' % (datetime.datetime.now(), thread_name, random.choice(ips),uri,random.randint(2000,5000),referer,useragent))
+            unique_message_1 = thread_name+"_uni"+str(uuid.uuid4())[:6]
+            f.write('%s - %s - [%s_%d] "GET %s HTTP/1.0" 200 %s "%s" "%s"\n' % (datetime.datetime.now(), thread_name, unique_message_1,count, uri,random.randint(2000,5000),referer,useragent))
+            count = count + 1
+            final_time = datetime.datetime.now()
+        print ("Source %s took  %.2f seconds and generated messgage with string %s : %d times"  % (thread_name, (final_time - initial_time).total_seconds(), unique_message_1, count))
 
 def execute_main():
     jobs = []
